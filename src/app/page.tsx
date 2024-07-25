@@ -48,7 +48,7 @@ export default function Home() {
 
           // check if there is possibility to send new request;
           if (
-            nextRequestTime - firstRequestTime < limits.perSecond &&
+            nextRequestTime - firstRequestTime < limits.time &&
             requestCount === quantity
           ) {
             j -= 1;
@@ -57,7 +57,7 @@ export default function Home() {
 
           // resetting the request count
           if (
-            nextRequestTime - firstRequestTime >= limits.perSecond &&
+            nextRequestTime - firstRequestTime >= limits.time &&
             requestCount === quantity
           ) {
             firstRequestTime = nextRequestTime;

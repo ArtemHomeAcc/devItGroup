@@ -9,22 +9,21 @@ import { NextResponse } from 'next/server';
 
 type MainRequest = (num: number) => Promise<Result>;
 
-let firstRequest: number;
+let timeOfFirstRequestInCurrentTime: number;
 let requestCount = 0;
 
-const delay = 100;
-
 export const mainRequest: MainRequest = async (num) => {
-  if (!firstRequest) {
-    firstRequest = Date.now();
+  if (!timeOfFirstRequestInCurrentTime) {
+    timeOfFirstRequestInCurrentTime = Date.now();
   }
   requestCount += 1;
 
-  const nextRequest = Date.now();
+  const timeOfNextRequestInCurrentTime = Date.now();
 
   // check if the user hasn't exceeded the limits
   if (
-    nextRequest - firstRequest >= limits.perSecond &&
+    timeOfNextRequestInCurrentTime - timeOfFirstRequestInCurrentTime >=
+      limits.time &&
     requestCount >= limits.requestsPerSecond
   ) {
     NextResponse.json(
@@ -35,14 +34,16 @@ export const mainRequest: MainRequest = async (num) => {
 
   // clear checkpoints after defined period of time
   if (
-    nextRequest - firstRequest >= limits.perSecond &&
+    timeOfNextRequestInCurrentTime - timeOfFirstRequestInCurrentTime >=
+      limits.time &&
     requestCount < limits.requestsPerSecond
   ) {
-    firstRequest = nextRequest;
+    timeOfFirstRequestInCurrentTime = timeOfNextRequestInCurrentTime;
     requestCount = 0;
   }
 
-  // clear checkpoints after defined time
+  const delay = Math.floor(Math.random() * (1000 - 1) + 1);
+
   return waitDelay(delay).then(() => {
     return {
       id: num,
