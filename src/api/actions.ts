@@ -42,7 +42,9 @@ export const mainRequest: MainRequest = async (num) => {
     requestCount = 0;
   }
 
-  const delay = Math.floor(Math.random() * (1000 - 1) + 1);
+  const delay = Math.floor(
+    Math.random() * (limits.maxTime - limits.minTime) + limits.minTime
+  );
 
   return waitDelay(delay).then(() => {
     return {
